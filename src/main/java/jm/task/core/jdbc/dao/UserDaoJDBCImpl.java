@@ -61,12 +61,11 @@ public class UserDaoJDBCImpl implements UserDao {
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(
                     "INSERT INTO users (name, lastName, age) VALUES (?, ?, ?)");
-            connection.commit();
             statement.setString(1, name);
             statement.setString(2, lastName);
             statement.setByte(3, age);
             statement.executeUpdate();
-
+            connection.commit();
         } catch (SQLException e) {
             if (connection != null) {
                 try {
