@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
+    private Connection connection = Util.getConnection();
+
     public void createUsersTable() {
-        Connection connection = null;
         Statement statement = null;
         try {
-            connection = Util.getConnection();
             statement = connection.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS users ("
                     + "id INT AUTO_INCREMENT PRIMARY KEY,"
@@ -33,10 +33,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable() {
-        Connection connection = null;
         Statement statement = null;
         try {
-            connection = Util.getConnection();
             statement = connection.createStatement();
             statement.executeUpdate("DROP TABLE IF EXISTS users");
         } catch (SQLException e) {
@@ -54,10 +52,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     //
     public void saveUser(String name, String lastName, byte age) {
-        Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = Util.getConnection();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(
                     "INSERT INTO users (name, lastName, age) VALUES (?, ?, ?)");
@@ -83,16 +79,21 @@ public class UserDaoJDBCImpl implements UserDao {
                     throw new RuntimeException("Statement не удалось закрыть", e);
                 }
             }
+            try {
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
 
     //
     public void removeUserById(long id) {
-        Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = Util.getConnection();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement("Delete from users where id = ?");
             statement.setLong(1, id);
@@ -114,16 +115,21 @@ public class UserDaoJDBCImpl implements UserDao {
                     throw new RuntimeException("Statement не удалось закрыть", e);
                 }
             }
+            try {
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = Util.getConnection();
             statement = connection.prepareStatement("SELECT * FROM users");
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -140,14 +146,14 @@ public class UserDaoJDBCImpl implements UserDao {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    throw new RuntimeException("Statement не удалось закрыть",e);
+                    throw new RuntimeException("Statement не удалось закрыть", e);
                 }
             }
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    throw new RuntimeException("ResultSet не удалось закрыть",e);
+                    throw new RuntimeException("ResultSet не удалось закрыть", e);
                 }
             }
         }
@@ -156,10 +162,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     //
     public void cleanUsersTable() {
-        Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = Util.getConnection();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement("DELETE from users");
             statement.executeUpdate();
@@ -179,6 +183,13 @@ public class UserDaoJDBCImpl implements UserDao {
                 } catch (SQLException e) {
                     throw new RuntimeException("Statement не удалось закрыть", e);
                 }
+            }
+            try {
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         }
     }
