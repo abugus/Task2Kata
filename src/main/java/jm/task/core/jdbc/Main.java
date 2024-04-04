@@ -10,7 +10,6 @@ public class Main {
     public static void main(String[] args) {
         UserService userService = new UserServiceImpl();
 
-        try {
             userService.createUsersTable();
             System.out.println("Таблица создана");
 
@@ -33,8 +32,7 @@ public class Main {
 
             userService.dropUsersTable();
             System.out.println("Удаление таблицы users прошло успешно");
-        } finally {
+
             Util.closeConnection();
-        }
     }
 }
