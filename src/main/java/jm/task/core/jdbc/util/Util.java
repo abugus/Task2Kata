@@ -11,13 +11,13 @@ public class Util {
     private static Connection connection;
 
     private Util() {
-
     }
 
     public static Connection getConnection() {
         if (connection == null) {
             try {
                 connection = DriverManager.getConnection(HOST, USERNAME, PASSWORD);
+                System.out.println("Соединение установлено");
             } catch (SQLException e) {
                 throw new RuntimeException("Не удалось установить соединение", e);
             }
@@ -29,8 +29,9 @@ public class Util {
         if (connection != null) {
             try {
                 connection.close();
+                System.out.println("Соединение закрыто");
             } catch (SQLException e) {
-                throw new RuntimeException("Соединение не было закрыто", e);
+                throw new RuntimeException("Не удалось закрыть соединение", e);
             }
         }
     }
