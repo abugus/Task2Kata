@@ -51,7 +51,8 @@ public class UserDaoJDBCImpl implements UserDao {
     //
     public void removeUserById(long id) throws SQLException {
         connection.setAutoCommit(false);
-        try (PreparedStatement statement = connection.prepareStatement("Delete from users where id = ?")) {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "Delete from users where id = ?")) {
             statement.setLong(1, id);
             statement.executeUpdate();
             connection.commit();
@@ -65,7 +66,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM users");
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT * FROM users");
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 long id = resultSet.getLong("id");
@@ -83,7 +85,8 @@ public class UserDaoJDBCImpl implements UserDao {
     //
     public void cleanUsersTable() throws SQLException {
         connection.setAutoCommit(false);
-        try (PreparedStatement statement = connection.prepareStatement("DELETE from users")) {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "DELETE from users")) {
             statement.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
